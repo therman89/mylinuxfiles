@@ -19,8 +19,8 @@ MEAS_DATA_LINES = 10
 NumberOfLines = 0
 nodecnt = 2
 Node = [MeasData() for i in  range(nodecnt)]
-#ser = serial.Serial('/dev/ttyACM0',115200)
-ser = serial.Serial('COM17',115200)
+ser = serial.Serial('/dev/ttyACM0',115200)
+#ser = serial.Serial('COM17',115200)
 ser.timeout = 1 
 Node[0].ReadKey = 'DW24J25W85FHJ6XD'
 Node[1].ReadKey = 'M6UVE1VBFQGNHNDI'
@@ -46,8 +46,8 @@ while(True):
 				if (mData > 0 and mData <= nodecnt):
 					nodeidx = mData-1
 					#print "Node " + str(mData)
-				elif("Humidity" in mName):
-					Node[nodeidx].humidity = mData
+			elif("Humidity" in mName):
+				Node[nodeidx].humidity = mData
 				#print "Humidity " + str(mData)
 			elif("Temperature" in mName):
 				Node[nodeidx].temp = mData 
@@ -81,9 +81,9 @@ while(True):
 		with open("log.txt",'a') as log:
 			log.write(str(datetime.now()) + " Index error. Last data was:\n")
 			log.write(line + "\n")
-	except Exception:
+	except Exception as e:
 		with open("log.txt",'a') as log:
-			log.write(str(datetime.now()) + " Unhandled exception. Last data was:\n")
+			log.write(str(datetime.now()) + " Unhandled exception.\n" + str(e) + "\nLast data was:\n")
 			log.write(line + "\n")
 		
 ser.close()
