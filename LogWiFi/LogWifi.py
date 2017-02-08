@@ -11,7 +11,7 @@ params = urllib.urlencode({'key': 'RQQZ5DNA5C5UENIA', 'field1': '1'})
 
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y.%m.%d. %H:%M:%S')
-filepath = '/home/pi/LogWiFi/WifiTesterLog.log'
+filepath = '/home/pi/mylinuxfiles/LogWiFi/WifiTesterLog.log'
 
 def check(url='http://www.google.com/', timeout=5):
     try:
@@ -20,14 +20,12 @@ def check(url='http://www.google.com/', timeout=5):
 	requests.post(form_url,submission)
 	urllib.urlopen("https://api.thingspeak.com/update", data=params)
 	
-	file = open(filepath,'a')
-	file.write(st+',1,'+get_external_ip()+'\n')
-	file.close()
+	with open(filepath,'a') as file:
+		file.write(st+',1,'+get_external_ip()+'\n')
         return True
     except requests.ConnectionError:
-	file = open(filepath,'a')
-	file.write(st+',0\n')
-	file.close()
+	with open(filepath,'a') as file:
+		file.write(st+',0\n')
         print("No internet connection available.")
     return False
 

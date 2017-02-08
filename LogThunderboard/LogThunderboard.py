@@ -31,7 +31,7 @@ while(True):
 	line = line.strip()
 	try:
 		if(line != ''):
-			print line
+			#print line
 			NumberOfLines = NumberOfLines + 1
 			words = line.split(':')
 			#print words[0].strip()
