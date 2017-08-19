@@ -6,9 +6,36 @@ import struct
 from influxdb import InfluxDBClient
 import datetime
 import pytz
-import pyowm
 import urllib2
 from BeautifulSoup import BeautifulSoup
+
+def get_outside_temperature(location='Budapest XIX. ker'):
+	contenturl = "http://www.amsz.hu/ws/index.php?view=currdat&user=CAD&num=1"
+	city = ''
+	max_retries = 100
+	while location not in city and max_retries:
+		max_retries -= 1
+		soup = BeautifulSoup(urllib2.urlopen(contenturl).read(), convertEntities=BeautifulSoup.HTML_ENTITIES)
+		city = soup('td', attrs={'height':'19', 'colspan':'3', 'align':'center'})[0].find(text=True)
+	if max_retries != 0:
+		#print city
+		table = soup('td', attrs={'class':'menusav-currdat'})
+		# print table
+		w_list = []
+		for row in table:
+			text = str(row.find(text=True))
+			if text != ' ':
+				w_list.append(str(text).replace(':',''))
+				# print text
+		w = dict(zip(w_list[::2], w_list[1::2]))
+		# for k in w.keys():
+		#     print k, w[k]
+		try:
+			return float(w['Hőmérséklet'].replace('°C',''))
+		except:
+			return None
+	else:
+		return None
 
 config = ConfigParser.ConfigParser()
 config_path = "/home/pi/mylinuxfiles/LogThunderboard/sensors.cfg" 
@@ -23,14 +50,10 @@ uuid['supply_voltage'] = config.get('uuid', 'vsup_uuid')
 uuid['als_reading'] = config.get('uuid', 'als_uuid')
 uuid['uv_index'] = config.get('uuid', 'uv_uuid')
 adapter = pygatt.GATTToolBackend()
-temperature_external = None
-try:
-	owm = pyowm.OWM('cdb3776f739eb81734fcd21f893ccc21')
-	observation = owm.weather_at_place('Budapest')
-	w = observation.get_weather()
-	temperature_external = w.get_temperature('celsius')['temp']
-except:
-	pass
+temperature_external = get_outside_temperature()
+
+
+
 def main():
 
 #    unix_time_ms = int((time.time()-time.altzone))
