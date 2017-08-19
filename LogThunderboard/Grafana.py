@@ -31,7 +31,9 @@ def get_outside_temperature(location='Budapest XIX. ker'):
 		# for k in w.keys():
 		#     print k, w[k]
 		try:
-			return float(w['Hőmérséklet'].replace('°C',''))
+			t = float(w['Hőmérséklet'].replace('°C',''))
+		#	print t
+			return t
 		except:
 			return None
 	else:
@@ -109,11 +111,6 @@ def main():
 				#print "Not connected. Retrying..."			
 	
 	adapter.stop()
-
-        
-def get_weather():
-	pass
-
 
 if __name__ == "__main__":
     main()
