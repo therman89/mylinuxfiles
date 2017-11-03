@@ -98,17 +98,17 @@ def main():
 					}
 						}
 					]
-#				print json_body
+				print json_body
 			
 				client = InfluxDBClient('localhost', 8086, 'admin', 'tiDO1989', 'test')
 				client.write_points(json_body)
 				break
 			except pygatt.exceptions.NotificationTimeout:
 				pass
-			#   print "Timeout... retry"
+			        print "Timeout... retry"
 			except pygatt.exceptions.NotConnectedError:
 				pass
-				#print "Not connected. Retrying..."			
+				print "Not connected. Retrying..."			
 	
 	adapter.stop()
 
