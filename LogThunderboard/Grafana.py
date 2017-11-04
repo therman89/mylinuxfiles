@@ -67,9 +67,9 @@ def main():
 			retry -= 1
 			try:
 				#Iterate all Thunderboard Senses
-#				print nodes['address'][i]
+				#print nodes['address'][i]
 				device = adapter.connect(nodes['address'][i])  # TBS
-	#            print "connected to BLE device"
+		                print "connected to BLE device"
 				#Get data from one Thunderboard Sense
 				humidity = struct.unpack("<H", device.char_read(uuid['humidity']))[0] / 100.0
 				temperature = struct.unpack("<H", device.char_read(uuid['temperature']))[0] / 100.0
@@ -81,6 +81,8 @@ def main():
 				unix_time_ms = d.replace(tzinfo=pytz.UTC)
 				unix_time_ms.isoformat()
 				
+				with open('temperature', 'w') as f:
+					f.write(str(temperature) + '\n')
 				json_body = [
 						{
 						"measurement": "TBS_1",
@@ -105,7 +107,7 @@ def main():
 				break
 			except pygatt.exceptions.NotificationTimeout:
 				pass
-			        print "Timeout... retry"
+			        #print "Timeout... retry"
 			except pygatt.exceptions.NotConnectedError:
 				pass
 				print "Not connected. Retrying..."			
