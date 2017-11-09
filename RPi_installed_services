@@ -5,3 +5,5 @@ piVPN
 Python + pygatt
 MQTT
 (Termosztát)
+mutt - email kliens
+ssmtp - smtp service

@@ -69,7 +69,7 @@ def main():
 				#Iterate all Thunderboard Senses
 				#print nodes['address'][i]
 				device = adapter.connect(nodes['address'][i])  # TBS
-		                print "connected to BLE device"
+#		                print "connected to BLE device"
 				#Get data from one Thunderboard Sense
 				humidity = struct.unpack("<H", device.char_read(uuid['humidity']))[0] / 100.0
 				temperature = struct.unpack("<H", device.char_read(uuid['temperature']))[0] / 100.0
@@ -100,7 +100,7 @@ def main():
 					}
 						}
 					]
-				print json_body
+#				print json_body
 			
 				client = InfluxDBClient('localhost', 8086, 'admin', 'tiDO1989', 'test')
 				client.write_points(json_body)
@@ -110,8 +110,10 @@ def main():
 			        #print "Timeout... retry"
 			except pygatt.exceptions.NotConnectedError:
 				pass
-				print "Not connected. Retrying..."			
-	
+#				print "Not connected. Retrying..."			
+			except:
+				print "Unhandled exception"
+
 	adapter.stop()
 
 if __name__ == "__main__":
