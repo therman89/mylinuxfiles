@@ -14,17 +14,14 @@ while user == [] and location not in city and max_retries:
     max_retries -= 1
     soup = BeautifulSoup(urllib2.urlopen(contenturl).read(), convertEntities=BeautifulSoup.HTML_ENTITIES)
     user = soup('a', attrs={'href': '../profile.php?lookup=CAD'})
-    #print city, max_retries
 if max_retries != 0:
-    #print "Found user: ", user[0].find(text=True)
     precip = float(soup.find("td", text=u'Mai csapadék: ').parent.parent.findNext('td').findNext('td').text[:-2])
-    #print 'Mai csapadék: ', precip, 'mm'
-    # print precip
+    print 'Mai csapadék: ', precip, 'mm'
     temperature = float(soup.find("td", text=u'Hőmérséklet:').parent.parent.findNext('td').findNext('td').text[:-2])
-    #print 'Hőmérséklet: ', temperature, '°C'
-precip = 0
+#    print 'Hőmérséklet: ', temperature, '°C'
+
 cron  = CronTab(user=True)
-if precip >= 4: # and (5 < datetime.datetime.now().hour < 7):
+if precip >= 4 and datetime.datetime.now().hour == 6:
     print "Morning Off"
     for job in cron.find_comment("Morning On"):
       job.enable(False)
@@ -32,11 +29,17 @@ else:
     print "Morning on"
     for job in cron.find_comment("Morning On"):
       job.enable()
-if precip >= 8: # and (17 < datetime.datetime.now().hour < 19):
+
+morning_is_enabled = 0
+for job in cron.find_comment("Morning On"):
+      morning_is_enabled = job.is_enabled()
+      if morning_is_enabled:
+        print "Morning was enabled"
+if (precip >= 8 or (precip >=4 and morning_is_enabled)) and datetime.datetime.now().hour == 18:
     print "Eveing off"
     for job in cron.find_comment("Evening On"):
       job.enable(False)
-	else:
+else:
     print "Evening on"
     for job in cron.find_comment("Evening On"):
       job.enable()
