@@ -1,0 +1,12 @@
+switch.csepegteto:
+    icon: mdi:water
+switch.ventillator:
+    icon: mdi:fan
+light.karacsonyfa:
+    icon: mdi:pine-tree
+light.konyhai_karacsonyi_vilagitas:
+    icon: mdi:creation
+light.karacsonyi_vilagitas:
+    icon: mdi:creation
+light.nappali:
+    icon: mdi:creation

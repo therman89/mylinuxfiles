@@ -1,0 +1,60 @@
+default_view:
+    view: yes
+    icon: mdi:home
+    entities:
+      - group.Lights
+      - group.Switches
+      - group.Fancy_lights
+      - group.Cameras
+      - group.Sensors
+      - history_graph.Homerseklet
+      - history_graph.Paratartalom
+      - sensor.haloszoba_homerseklet
+      - sensor.haloszoba_paratartalom
+      - sensor.kulso_homerseklet
+      - sensor.kulso_paratartalom
+      - sensor.eloszoba_homerseklet
+      - sensor.eloszoba_paratartalom
+      - sensor.eloszoba_telepfeszultseg
+#      - sensor.Temperature_2
+#      - sensor.Humidity_2
+#      - sensor.SupplyVoltage_2
+#Sensors:
+#    name: Szenzorok
+#    view: no
+#    entities:
+#        - sensor.Temperature_1
+#        - sensor.Humidity_1
+#        - sensor.SupplyVoltage_1
+#        - sensor.Temperature_2
+#        - sensor.Humidity_2
+#        - sensor.SupplyVoltage_2
+Lights:
+    name: Világítás
+    view: no
+    entities:
+        - light.haloszoba
+        - input_number.bedroom_brightness
+    control: hidden
+Fancy_lights:
+    name: Díszvilágítás
+    entities:
+        - light.nappali
+        - light.karacsonyi_vilagitas
+        - light.konyhai_karacsonyi_vilagitas
+        - light.karacsonyfa
+Switches:
+    name: Kapcsolók
+    entities:
+        - switch.csepegteto
+    control: hidden
+Settings:
+    name: Beállítások
+    view: yes
+    entities:
+        - automation.auto_renew_ssl_cert
+Cameras:
+    name: Kamera
+    entities:
+        - camera.kapu_kamera
+        - camera.kert_kamera

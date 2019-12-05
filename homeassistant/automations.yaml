@@ -1,0 +1,16 @@
+- alias: 'Auto Renew SSL Cert'
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.ssl_cert_expiry
+    below: 14
+  action:
+    service: shell_command.renew_ssl
+- alias: Bedroom Light - Adjust Brightness
+  trigger:
+    platform: state
+    entity_id: input_number.bedroom_brightness
+  action:
+    - service: light.turn_on
+      data_template:
+          entity_id: light.haloszoba
+          brightness: "{{ trigger.to_state.state | int }}"

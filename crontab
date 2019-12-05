@@ -1,0 +1,16 @@
+*/5 * * * * /home/pi/mylinuxfiles/duckdns/duckdns.sh > /dev/null 2>&1 # m h  dom mon dow   command
+
+0 1 * * * python ~/mylinuxfiles/sunset.py
+53 15 * * * python ~/mylinuxfiles/fancy_lights_control.py on # Christmas lights On
+@daily nohup  python ~/mylinuxfiles/fancy_lights_control.py off # Christmas lights Off
+
+# 55 5,18 * * * python ~/mylinuxfiles/sprinkler_scheduler.py > /dev/null
+# 0 6 * * 1,4,6 mosquitto_pub -t garden/Sprinkler/cmnd/POWER -m "ON" > /dev/null # Morning On
+# 15 6 * * * mosquitto_pub -t garden/Sprinkler/cmnd/POWER -m "OFF" >/dev/null # Morning Off
+# 0 19 * * * mosquitto_pub -t garden/Sprinkler/cmnd/POWER -m "ON" >/dev/null # Evening On
+# 15 19 * * * mosquitto_pub -t garden/Sprinkler/cmnd/POWER -m "OFF" >/dev/null # Evening Off
+
+*/5 * * * * python ~/mylinuxfiles/LogThunderboard/ble_by_mac.py  Thunderboard_1 00:0B:57:51:AF:DE  > /dev/null 2>&1
+*/5 * * * * python ~/mylinuxfiles/LogThunderboard/ble_by_mac.py  Thunderboard_2 00:0B:57:10:1A:61  > /dev/null 2>&1
+*/5 * * * * python ~/mylinuxfiles/LogThunderboard/ble_by_mac.py  Thunderboard_3 00:0B:57:07:35:CF  > /dev/null 2>&1
+

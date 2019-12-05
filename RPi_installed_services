@@ -1,9 +1,18 @@
 Git
 Grafana - telemetria
-Motion - kamera
+Motioneye - kamera
 piVPN
 Python + pygatt
 MQTT
-(Termosztát)
 mutt - email kliens
 ssmtp - smtp service
+deluged
+influxdb
+php
+apache
+
+crontab:
+0 * * * * ~/mylinuxfiles/duckdns/duckdns.sh >/dev/null 2>&1
+*/5 * * * * python ~/mylinuxfiles/LogThunderboard/Grafana.py
+@reboot deluged&
+0 2 * * * find /mnt/extHDD/Camera -ctime +3 -exec rm {} \;

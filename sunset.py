@@ -13,6 +13,7 @@ try:
 	[hour, minute] = sun['sunset'].time().hour, sun['sunset'].time().minute
 	jobs = cron.find_comment("Stairs light On")
 	for job in jobs:
+		print job
 		job.setall(minute, hour, '*', '*', '*')
 	cron.write()
 except Exception as e:

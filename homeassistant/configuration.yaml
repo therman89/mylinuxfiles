@@ -1,0 +1,223 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 47.4345
+  longitude: 18.9366
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Budapest
+  # Customization file
+  customize: !include customize.yaml
+  whitelist_external_dirs:
+    - /home/homeassistant/.homeassistant/
+    - /home/pi/mylinuxfiles/LogThunderboard/
+  auth_providers:
+   - type: legacy_api_password
+     api_password: !secret http_password
+   - type: trusted_networks
+     trusted_networks:
+      - 192.168.1.0/24
+      - 127.0.0.1
+
+#system_health:
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+
+  # Secrets are defined in the file secrets.yaml
+http:
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+  ssl_certificate: /etc/letsencrypt/live/therman.duckdns.org/fullchain.pem
+  ssl_key: /etc/letsencrypt/live/therman.duckdns.org/privkey.pem
+  base_url: https://therman.duckdns.org
+  ssl_profile: intermediate
+    
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+  # SSL expiry badge
+recorder:
+  purge_keep_days: 14
+  purge_interval: 1
+shell_command:
+  renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Weather prediction
+sensor:
+#  - platform: yr
+  - platform: command_line
+    name: SSL cert expiry
+    unit_of_measurement: days
+    scan_interval: 10800
+    command: "ssl-cert-check -b -c /etc/letsencrypt/live/therman.duckdns.org/cert.pem | awk '{ print $NF }'"
+  - platform: file
+    name: "Előszoba hőmérséklet"
+    file_path: /home/pi/mylinuxfiles/LogThunderboard/Thunderboard.json
+    value_template: '{{ value_json["Thunderboard_1"]["Temperature"] }}'
+    unit_of_measurement: '°C'
+  - platform: file
+    name: "Előszoba páratartalom"
+    file_path: /home/pi/mylinuxfiles/LogThunderboard/Thunderboard.json
+    value_template: '{{value_json["Thunderboard_1"]["Humidity"]}}'
+    unit_of_measurement: '%'
+  - platform: file
+    name: "Előszoba telepfeszültség"
+    file_path: /home/pi/mylinuxfiles/LogThunderboard/Thunderboard.json
+    value_template: '{{value_json["Thunderboard_1"]["SupplyVoltage"]}}'
+    unit_of_measurement: 'V'
+  - platform: file
+    name: Temperature_3
+    file_path: /home/pi/mylinuxfiles/LogThunderboard/Thunderboard.json
+    value_template: '{{value_json["Thunderboard_3"]["Temperature"] }}'
+    unit_of_measurement: '°C'
+  - platform: file
+    name: Humidity_3
+    file_path: /home/pi/mylinuxfiles/LogThunderboard/Thunderboard.json
+    value_template: '{{value_json["Thunderboard_3"]["Humidity"]}}'
+    unit_of_measurement: '%'
+  - platform: file
+    name: SupplyVoltage_3
+    file_path: /home/pi/mylinuxfiles/LogThunderboard/Thunderboard.json
+    value_template: '{{ value_json["Thunderboard_3"]["SupplyVoltage"]}}'
+    unit_of_measurement: 'V'
+  - platform: mqtt
+    name: "Hálószoba hőmérséklet"
+    state_topic: "house/bedroom/bedlight/tele/SENSOR"
+    value_template: '{{value_json["HTU21"]["Temperature"]}}'
+    unit_of_measurement: '°C'
+  - platform: mqtt
+    name: "Hálószoba páratartalom"
+    state_topic: "house/bedroom/bedlight/tele/SENSOR"
+    value_template: '{{value_json["HTU21"]["Humidity"]}}'
+    unit_of_measurement: '%'
+  - platform: mqtt
+    name: "Külső hőmérséklet"
+    state_topic: "garden/Sprinkler/tele/SENSOR"
+    value_template: '{{value_json["HTU21"]["Temperature"]}}'
+    unit_of_measurement: '°C'
+  - platform: mqtt
+    name: "Külső páratartalom"
+    state_topic: "garden/Sprinkler/tele/SENSOR"
+    value_template: '{{value_json["HTU21"]["Humidity"]}}'
+    unit_of_measurement: '%'
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+mqtt:
+  broker: 192.168.1.10
+  port: 1883
+  
+light:
+  - platform: mqtt
+    name: "Nappali"
+    command_topic: "house/christmas_lights/staircase/cmnd/power"
+    state_topic: "house/christmas_lights/staircase/stat/POWER"
+    payload_off: "OFF"
+    payload_on: "ON"
+#  - platform: mqtt
+#    name: "Hálószoba"
+#    command_topic: "house/bedroom/bedlight/cmnd/power"
+#    state_topic: "house/bedroom/bedlight/stat/POWER"
+#    payload_off: "OFF"
+#    payload_on: "ON"
+  - platform: mqtt
+    name: "Karácsonyi világítás"
+    command_topic: "house/christmas_lights/bedroom/cmnd/power"
+    state_topic: "house/christmas_lights/bedroom/stat/POWER"
+    payload_off: "OFF"
+    payload_on: "ON"
+  - platform: mqtt
+    name: "Karácsonyfa"
+    command_topic: "house/christmas_lights/livingroom/cmnd/power"
+    state_topic: "house/christmas_lights/livingroom/stat/POWER"
+    payload_off: "OFF"
+    payload_on: "ON"
+  - platform: mqtt
+    name: "Konyhai karácsonyi világítás"
+    command_topic: "house/christmas_lights/kitchen/cmnd/power"
+    state_topic: "house/christmas_lights/kitchen/stat/POWER"
+    payload_off: "OFF"
+    payload_on: "ON"
+  - platform: mqtt
+    name: "Hálószoba"
+    command_topic: "house/bedroom/bedlight/cmnd/power"
+    state_topic: "house/bedroom/bedlight/stat/POWER"
+    payload_off: "OFF"
+    payload_on: "ON"
+    brightness_state_topic: "house/bedroom/bedlight/stat/dimmer"
+    brightness_command_topic: "house/bedroom/bedlight/cmnd/dimmer"
+    optimistic: false
+input_number:
+  bedroom_brightness:
+    name: Brightness
+    initial: 20
+    min: 0
+    max: 100
+    step: 1
+switch:
+  - platform: mqtt
+    name: "Csepegtető"
+    command_topic: "garden/Sprinkler/cmnd/power"
+    state_topic: "garden/Sprinkler/stat/POWER"
+    payload_off: "OFF"
+    payload_on: "ON"
+history_graph:
+  gr1:
+    name: "Hőmérséklet"
+    hours_to_show: 24
+    entities:
+        - sensor.haloszoba_homerseklet
+        - sensor.eloszoba_homerseklet
+  gr2:
+    name: "Páratartalom"
+    hours_to_show: 24
+    entities:
+      - sensor.haloszoba_paratartalom
+      - sensor.eloszoba_paratartalom
+camera:
+#  - platform: ffmpeg
+#    input: http://192.168.1.13:81/videostream.cgi?user=admin&pwd=tiDO1989
+#    name: Kapu Állókép
+#    extra_arguments: -pred 1
+  - platform: ffmpeg 
+    name: Kapu kamera
+    input: -rtsp_transport udp -i rtsp://admin:tiDO1989@192.168.1.13:10554/udp/av0_0
+  - platform: ffmpeg 
+    name: Kert kamera
+    input: -rtsp_transport udp -i rtsp://admin:tiDO1989@192.168.1.14:10554/udp/av0_0
+
+ifttt:
+  key: bMXcImdoLEf8hiSDIXnQpP

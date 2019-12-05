@@ -1,0 +1,6 @@
+proc            /proc           proc    defaults          0       0
+/dev/mmcblk0p1  /boot           vfat    defaults          0       2
+/dev/mmcblk0p2  /               ext4    defaults,noatime  0       1
+# a swapfile is not a swap partition, no line here
+#   use  dphys-swapfile swap[on|off]  for that
+UUID="4b0e6242-28c3-4a40-a5c5-6ed619086ca5" /mnt/extHDD	ext4	 nofail,defaults	0	0
