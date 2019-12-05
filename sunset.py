@@ -2,6 +2,7 @@ from crontab import CronTab
 import datetime
 
 cron  = CronTab(user=True)
+#cron  = CronTab()
 
 from astral import Astral
 city_name = 'Budapest'
@@ -11,7 +12,7 @@ try:
 	city = a[city_name]
 	sun = city.sun(date=datetime.date.today(), local=True)
 	[hour, minute] = sun['sunset'].time().hour, sun['sunset'].time().minute
-	jobs = cron.find_comment("Stairs light On")
+	jobs = cron.find_comment("Christmas lights On")
 	for job in jobs:
 		print job
 		job.setall(minute, hour, '*', '*', '*')

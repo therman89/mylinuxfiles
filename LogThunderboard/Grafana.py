@@ -68,7 +68,7 @@ def main():
 			retry -= 1
 			try:
 				#Iterate all Thunderboard Senses
-				#print nodes['address'][i]
+				print nodes['address'][i]
 				device = adapter.connect(nodes['address'][i])  # TBS
 		                print "connected to BLE device"
 				#Get data from one Thunderboard Sense
